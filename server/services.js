@@ -1,6 +1,6 @@
 const pool = require('../database/index');
 
-// need /products route to query product table
+// need a /products route to query product table
 const getProducts = () => {
   // need to be able to specify a count
   pool
