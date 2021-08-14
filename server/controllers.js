@@ -2,13 +2,13 @@ const pool = require('../database/index');
 
 // need a /products route to query product table
 const getProducts = (req, res) => {
-  // need to be able to specify a count
-  console.log(req);
+  const { count, page } = req.query;
+  const offset = count * (page - 1);
   pool
     .connect()
     .then((client) => (
       client
-        .query('select * from product')
+        .query('select * from product order by id limit $1 offset $2', [count, offset])
         .then((results) => {
           client.release();
           res.send(results.rows);
@@ -25,11 +25,12 @@ const getProducts = (req, res) => {
 // table where product ID matches route
 
 const getProductInfo = (req, res) => {
+  const { productId } = req.params;
   pool
     .connect()
     .then((client) => (
       client
-        .query('select *, (select json_agg(features) from (select feature, value from features where product_id = product.id) features) as features from product where id = $1', [req.params.product_id])
+        .query('select *, (select json_agg(features) from (select feature, value from features where product_id = product.id) features) as features from product where id = $1', [productId])
         .then((results) => {
           client.release();
           res.send(results.rows);
@@ -49,18 +50,18 @@ const getProductInfo = (req, res) => {
 // the keys of which are skus pertaining to the style of containing objects.
 
 const getProductStyles = (req, res) => {
-  const { product_id } = req.params;
+  const { productId } = req.params;
   pool
     .connect()
     .then((client) => (
       client
         .query(`select *, (select json_agg(photos) from (select url, thumbnail_url from photos where style_id = styles.id) photos) as photos,
-        (select jsonb_object_agg(id, sku) from (select id, quantity, size from skus where style_id = styles.id) sku) as skus
-         from styles where product_id = $1;`, [product_id])
+        (select jsonb_object_agg(sku, skus) from (select sku, quantity, size from skus where style_id = styles.id) skus) as skus
+         from styles where product_id = $1;`, [productId])
         .then((results) => {
           client.release();
           const obj = {
-            product_id: product_id,
+            product_id: productId,
             results: results.rows,
           };
           res.send(obj);
@@ -77,14 +78,15 @@ const getProductStyles = (req, res) => {
 // route to return array of all prod2 values in related where prod1 matches route.
 
 const getRelatedProducts = (req, res) => {
+  const { productId } = req.params;
   pool
     .connect()
     .then((client) => (
       client
-        .query('select * from related where current_product_id = $1', [req.params.product_id])
+        .query('(select json_agg(related.related_product_id) as related from (select related_product_id from related where current_product_id = $1) related)', [productId])
         .then((results) => {
           client.release();
-          res.send(results.rows);
+          res.send(results.rows[0].related);
         })
         .catch((err) => {
           client.release();

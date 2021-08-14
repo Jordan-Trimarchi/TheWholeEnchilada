@@ -46,7 +46,7 @@ create table photos (
 COPY photos FROM '/Users/jordant./Documents/SDC_data/photos.csv' DELIMITER ',' CSV HEADER;
 
 create table skus (
-  id INTEGER PRIMARY KEY, 
+  sku INTEGER PRIMARY KEY, 
   style_id integer, 
   size text, 
   quantity integer, 
@@ -67,5 +67,44 @@ select *, (select json_agg(features) from (select feature, value from features w
 --style with photos and skus
 select *, 
 (select json_agg(photos) from (select url, thumbnail_url from photos where style_id = styles.id) photos) as photos,
-(select jsonb_object_agg(id, sku) from (select id, quantity, size from skus where style_id = styles.id) sku) as skus
+(select jsonb_object_agg(sku, skus) from (select sku, quantity, size from skus where style_id = styles.id) skus) as skus
 from styles where product_id = $1;
+
+--products 
+select * from product order by id limit $1 offset $2
+
+--related
+(select json_agg(related.related_product_id) as related from (select related_product_id from related where current_product_id = $1) related)
+
+
+--indexing
+
+--styles
+  product_overview=# create index idx_style_id on styles(id);
+
+  create index idx_photos_styleId on photos(style_id);
+
+  create index idx_sku_styleId on skus(style_id);
+
+  create index idx_style_prodId on styles(product_id);
+
+--features
+  
+  create index idx_feature_prodId on features(product_id);
+  
+  create index idx_product_Id on product(id);
+
+--related
+
+  create index idx_related_prodCurrId on related(current_product_id);
+
+--products
+
+  create index idx_productInfo_Id on product(
+    id,
+    name,
+    slogan, 
+    description,
+    category,
+    default_price
+  );
