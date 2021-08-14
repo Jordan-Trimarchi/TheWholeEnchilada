@@ -1,18 +1,15 @@
-const path = require('path');
-const express = require('express'); // npm installed
-const axios = require('axios');
+// const path = require('path');
+const express = require('express');
+const cors = require('cors');
+const router = require('./routes');
 
-const API_KEY = require('./config');
-const { getProducts, getProductInfo, getProductStyles, getRelatedProducts } = require('./services');
-const baseUrl = 'http://localhost:3000';
 const PORT = 3000;
-
 const app = express();
+
+app.use(express.json());
+app.use(cors());
+app.use('/products', router);
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}.`);
 });
-
-getProductStyles(23);
-
-// getRelatedProducts(500381);
