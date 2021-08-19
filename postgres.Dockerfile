@@ -1,7 +1,7 @@
 FROM postgres:latest
 
 RUN mkdir /seed/
-COPY ../*.csv /seed/
+COPY ./*.csv /seed/
 
 RUN chmod a+rx /seed
 
