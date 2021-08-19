@@ -2,7 +2,9 @@ const pool = require('../database/index');
 
 // need a /products route to query product table
 const getProducts = (req, res) => {
-  const { count, page } = req.query;
+  let { count, page } = req.query;
+  count = count || 5;
+  page = page || 1;
   const offset = count * (page - 1);
   pool
     .connect()
@@ -25,7 +27,7 @@ const getProducts = (req, res) => {
 // table where product ID matches route
 
 const getProductInfo = (req, res) => {
-  const { productId } = req.params;
+  const { product_id: productId } = req.params;
   pool
     .connect()
     .then((client) => (
@@ -33,7 +35,7 @@ const getProductInfo = (req, res) => {
         .query('select *, (select json_agg(features) from (select feature, value from features where product_id = product.id) features) as features from product where id = $1', [productId])
         .then((results) => {
           client.release();
-          res.send(results.rows);
+          res.send(results.rows[0]);
         })
         .catch((err) => {
           client.release();
@@ -50,7 +52,7 @@ const getProductInfo = (req, res) => {
 // the keys of which are skus pertaining to the style of containing objects.
 
 const getProductStyles = (req, res) => {
-  const { productId } = req.params;
+  const { product_id: productId } = req.params;
   pool
     .connect()
     .then((client) => (
@@ -67,7 +69,6 @@ const getProductStyles = (req, res) => {
           res.send(obj);
         })
         .catch((err) => {
-          console.log('!!!!!!!!!!!!!!!');
           client.release();
           console.log(err.stack);
         })
@@ -78,7 +79,7 @@ const getProductStyles = (req, res) => {
 // route to return array of all prod2 values in related where prod1 matches route.
 
 const getRelatedProducts = (req, res) => {
-  const { productId } = req.params;
+  const { product_id: productId } = req.params;
   pool
     .connect()
     .then((client) => (
