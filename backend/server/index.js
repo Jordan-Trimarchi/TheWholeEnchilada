@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use('/products', router);
+app.use('/', router);
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}.`);

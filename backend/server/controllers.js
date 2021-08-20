@@ -95,9 +95,15 @@ const getRelatedProducts = (req, res) => {
         })
     ));
 };
+
+const targetVerify = (req, res) => {
+  res.send('loaderio-d0458cbc2ea5b187ae4d1d93e06398c8');
+};
+
 module.exports = {
   getProducts,
   getProductInfo,
   getProductStyles,
   getRelatedProducts,
+  targetVerify,
 };
