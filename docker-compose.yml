@@ -3,8 +3,6 @@ services:
   node:
     image: sdc-node
     container_name: sdc-node
-    depends_on:
-      - postgres
     ports:
       - 3000:3000
     build:
