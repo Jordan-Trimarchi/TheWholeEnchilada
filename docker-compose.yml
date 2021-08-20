@@ -16,8 +16,7 @@ services:
     ports:
       - 3001:5432
     environment: 
-      POSTGRES_USER: "jordant."
-      POSTGRES_PASSWORD: "jordant"      
+      POSTGRES_HOST_AUTH_METHOD: "trust"    
     build:
       context: .
       dockerfile: postgres.Dockerfile
