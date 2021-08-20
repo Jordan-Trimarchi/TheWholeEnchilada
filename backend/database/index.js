@@ -5,6 +5,6 @@ const connection = new Pool({
   host: '18.191.224.181',
   database: 'product_overview',
   password: 'jordant',
-  port: 3002,
+  port: 3001,
 });
 module.exports = connection;
