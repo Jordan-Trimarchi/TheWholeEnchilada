@@ -9,7 +9,7 @@ services:
       context: ./backend
       dockerfile: node.Dockerfile
   postgres:
-    image: "sdc-postgres"
+    image: sdc-postgres
     container_name: "sdc-postgres"
     ports:
       - 3001:5432
@@ -19,3 +19,11 @@ services:
     build:
       context: .
       dockerfile: postgres.Dockerfile
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - 4747:4747 
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
