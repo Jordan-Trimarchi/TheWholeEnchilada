@@ -1,7 +1,9 @@
 # TheWholeEnchilada
 
-This backend queries roughly 10 million rows of data across 6 tables and serves even its larger queries consistently in < 25ms. <br/>
-I built this project to thoroughly explore the creation of a server and database that can perform complex queries and serve relevant data to an existing E-commerce front end.<br/>
+This backend queries roughly 10 million rows of data across 6 tables and serves even its larger queries consistently in < 25ms. 
+<br/><br/>
+I built this project to thoroughly explore the creation of a server and database that can perform complex queries and serve relevant data to an existing E-commerce front end.
+<br/><br/>
 Throughout this process I have discovered so much about backend development. From using PostgreSQL and CSVs to Dockerizing and Deploying, this has been an invaluable learning experience. <br/>
 <br/>
 
